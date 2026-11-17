@@ -1,30 +1,34 @@
-# MSO8204A Impedance Measurement Tool
+# MSO8204A 임피던스 측정 도구
 
-A MATLAB GUI for frequency-swept impedance measurements with a RIGOL MSO8204A oscilloscope. It checks instrument identity over LAN, acquires two voltage waveforms, estimates their fundamental phasors, and plots impedance magnitude, series resistance and reactance, inductance, and parallel resistance as the sweep runs.
+RIGOL MSO8204A 오실로스코프로 주파수별 임피던스를 측정하는 MATLAB GUI입니다. LAN으로 장비를 식별하고, 두 채널의 전압 파형에서 기본파 페이저를 구합니다. 스윕 중에는 임피던스 크기 `|Z|`, 직렬저항 `Rs`와 리액턴스 `X`, 인덕턴스 `L`, 병렬저항 `Rp`를 그래프로 표시합니다.
 
-This repository contains the MATLAB implementation only. It does not require Python, the separate RIGOL Control GUI, or LiteVNA software.
+이 저장소에는 MATLAB 코드만 포함되어 있습니다. Python, 별도의 RIGOL Control GUI, LiteVNA 소프트웨어는 필요하지 않습니다.
 
-## Open the GUI
+## GUI 실행하기
 
-Requires desktop MATLAB. The application was checked on MATLAB R2025b on Windows. Hardware is **not** required to open the GUI. No executable or separate installer is needed.
+데스크톱 MATLAB이 필요하며, Windows의 MATLAB R2025b에서 실행을 확인했습니다. **GUI만 열어보는 데는 장비가 필요하지 않습니다.** MATLAB이 설치돼 있다면 별도의 실행 파일이나 설치 프로그램도 필요하지 않습니다.
 
-1. Download the repository ZIP from **Code > Download ZIP**, or clone the repository.
-2. In MATLAB, set the Current Folder to the folder containing `mso8204_launcher.m`.
-3. In the MATLAB Command Window, enter:
+1. GitHub에서 **Code > Download ZIP**을 눌러 압축을 풀거나, 저장소를 클론합니다.
+2. MATLAB의 현재 폴더를 `mso8204_launcher.m`이 있는 폴더로 지정합니다.
+3. MATLAB 명령 창(**Command Window**)에 아래 명령을 입력합니다.
 
 ```matlab
 mso8204_launcher
 ```
 
-The GUI starts disconnected, without a prefilled instrument address.
+GUI는 장비에 연결되지 않은 상태로 열리며, 장비 주소 입력란은 비어 있습니다.
 
-## Run a Measurement
+## 장비 연결 및 측정
 
-1. Connect the oscilloscope to the LAN. Connect the circuit as **generator output > device under test > sense resistor > common ground**. CH1 measures the generator-side voltage and CH2 measures the sense-resistor voltage. Verify the wiring and probe settings before enabling the generator.
-2. Enter the oscilloscope IP address or hostname and select **Test Connection**. The application queries `*IDN?` on TCP port 5555 and enables **Run Sweep** only after identifying an MSO8204A.
-3. Set the start and stop frequencies (kHz), number of points, and the actual sense resistance (ohms). The initial settings are 10-100 kHz, 100 points, and 390 ohms.
-4. Select **Run Sweep**, confirm the generator settings, and choose an output folder. The app uses the scope's internal generator and updates four plots in the same window. It saves a timestamped Excel workbook and a MATLAB MAT file.
+1. 오실로스코프를 LAN에 연결하고, **신호발생기 출력 → 측정 대상 → 센스 저항 → 공통 접지** 순서로 회로를 구성합니다. CH1은 신호발생기 쪽 노드의 전압을, CH2는 센스 저항 양단의 전압을 측정합니다. 신호발생기 출력을 켜기 전에 배선과 프로브 설정을 확인합니다.
+2. 장비의 IP 주소나 호스트 이름을 입력하고 **Test Connection**을 누릅니다. 앱은 TCP 포트 `5555`에서 `*IDN?`으로 장비를 식별하며, MSO8204A가 확인되면 **Run Sweep**이 활성화됩니다.
+3. 시작·종료 주파수(kHz), 측정 포인트 수, 실제 센스 저항값(Ω)을 입력합니다. 기본값은 10~100 kHz, 100포인트, 390 Ω입니다.
+4. **Run Sweep**을 누른 뒤 신호발생기 설정을 확인하고 결과를 저장할 폴더를 선택합니다. 앱은 오실로스코프의 내장 신호발생기를 사용해 스윕하고, 같은 창의 그래프 네 개를 갱신합니다. 결과는 측정 시각이 포함된 이름으로 Excel과 MATLAB MAT 파일에 저장됩니다.
 
-The calculation uses `I = Vshunt / Rshunt` and `Z = (Vtotal - Vshunt) / I`, where voltages are complex fundamental phasors. The sweep requires an actual instrument; the application does not generate simulated measurements. The GUI and live plot updates were checked without a scope using test data, not as an end-to-end hardware validation of this release.
+## 계산 및 검증 범위
 
-Generated data files are excluded from version control. A MAT output can include the instrument address and identification response.
+두 채널 전압의 복소 기본파 페이저로 `I = Vshunt / Rshunt`와 `Z = (Vtotal - Vshunt) / I`를 계산합니다.
+
+실제 스윕에는 오실로스코프가 필요합니다. 장비 없이 GUI 시작과 테스트 데이터에 따른 그래프 갱신은 확인했지만, 이 공개 버전에서 실제 장비를 연결한 전체 스윕은 검증하지 않았습니다. 앱 자체는 모의 측정 데이터를 생성하지 않습니다.
+
+실측 결과는 Git에 포함하지 않습니다. MAT 결과 파일에는 장비 주소와 식별 응답이 포함될 수 있습니다.
