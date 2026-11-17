@@ -1,0 +1,18 @@
+# Measurement files and MATLAB-generated artifacts
+*.mat
+*.xlsx
+*.xls
+*.csv
+*.s1p
+*.s2p
+*.asv
+*.m~
+slprj/
+codegen/
+matlab_crash_dump.*
+
+# Local configuration and OS files
+.env
+.env.*
+Thumbs.db
+.DS_Store
